@@ -56,7 +56,7 @@ def find_contexts(training_data, d= 4):
 
 def count_occurrences(training_data, d=4, alphabet_size = None):
     """
-    Counts the number of occurrences of sigma where s is a context
+    Counts the number of occurrences of s\sigma where s is a context
     and \sigma is the symbol that immediately follows s in the
     training data.
 
@@ -79,7 +79,7 @@ def count_occurrences(training_data, d=4, alphabet_size = None):
     if alphabet_size == None:
         alphabet_size = max(training_data) + 1
 
-    counts = dict([(x, np.zeros(alphabet_size,dtype=int)) for x in contexts])
+    counts = dict([(x, np.zeros(alphabet_size,dtype=np.int)) for x in contexts])
 
     # Include the null context as well.
     counts[()] = np.bincount(training_data,minlength = alphabet_size)
@@ -271,12 +271,11 @@ class ppm:
         """
 
         if prefix != None:
-            new_data = np.zeros(len(prefix) + length,dtype=int)
-            for i in range(0, len(prefix)):
-                new_data[i] = prefix[i]
+            new_data = np.zeros(len(prefix) + length,dtype=np.int)
+            new_data[:len(prefix)] = prefix
             start = len(prefix)
         else:
-            new_data = np.zeros(length,dtype=int)
+            new_data = np.zeros(length,dtype=np.int)
             start = 0
 
         for t in range(start,len(new_data)):
