@@ -46,7 +46,7 @@ file_path = str(sys.argv[1])
 score = converter.parse(file_path)
 
 # Set default BPM (if not specified in the score)
-default_bpm = 180
+default_bpm = int(sys.argv[2])
 bpm = default_bpm
 
 # Get the BPM from the score if available
@@ -71,10 +71,8 @@ for part in score.parts:
                     melody += str(midi_number)+":"+str(duration_ms)+":"
                 elif isinstance(el, note.Rest):
                     duration_ms = round(convert_note_length_to_ms(el.quarterLength, bpm))
-                    melody += "-1:"+str(duration_ms)+":"
+                    melody += "0:"+str(duration_ms)+":"
 
     break
 print(melody)
-# measures = []
-# hscore = []
 
