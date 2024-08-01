@@ -23,6 +23,7 @@
 
 
 import sys
+from fractions import Fraction
 from music21 import converter, note, tempo
 
 def partition_measure(measure):
@@ -37,23 +38,8 @@ def extract_elements_in_range(measure, start_offset, end_offset):
             elements.append(el)
     return elements
 
-def convert_note_length_to_ms(quarter_length, bpm):
-    # Convert note length to milliseconds given the bpm
-    beat_duration = 60000 / bpm  # Duration of one beat in milliseconds
-    return quarter_length * beat_duration
-
 file_path = str(sys.argv[1])
 score = converter.parse(file_path)
-
-# Set default BPM (if not specified in the score)
-default_bpm = int(sys.argv[2])
-bpm = default_bpm
-
-# Get the BPM from the score if available
-metronome_marks = score.flat.getElementsByClass(tempo.MetronomeMark)
-if metronome_marks:
-    bpm = metronome_marks[0].number
-    print(bpm)
 
 # Extract notes and partition measure
 for part in score.parts:
@@ -67,12 +53,27 @@ for part in score.parts:
             for el in section_elements:
                 if isinstance(el, note.Note):
                     midi_number = el.pitch.midi
-                    duration_ms = round(convert_note_length_to_ms(el.quarterLength, bpm))
-                    melody += str(midi_number)+":"+str(duration_ms)+":"
+                    
+                    melody += str(midi_number)+":"+str(int(el.quarterLength*12))+":"
                 elif isinstance(el, note.Rest):
-                    duration_ms = round(convert_note_length_to_ms(el.quarterLength, bpm))
-                    melody += "0:"+str(duration_ms)+":"
+                    
+                    melody += "0:"+str(int(el.quarterLength*12))+":"
 
     break
+
 print(melody)
 
+"""
+| Note Type                  | Value |
+|----------------------------|-------|
+| Whole note (semibreve)     | 48    |
+| Half note (minim)          | 24    |
+| Quarter note (crotchet)    | 12    |
+| Eighth note (quaver)       | 6     |
+| Sixteenth note (semiquaver)| 3     |
+| Quarter note triplet       | 8     |
+| Eighth note triplet        | 4     |
+| Sixteenth note triplet     | 2     |
+
+Using these values, we can represent all note lengths without decimals.
+"""
