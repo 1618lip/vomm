@@ -1,27 +1,3 @@
-# from music21 import converter, note, stream, pitch, harmony, chord
-# import matplotlib.pyplot as plt
-# import math, re
-# from itertools import combinations
-# import sys
-
-# def partition_measure(measure, num_partitions=1):  # split each measure into 4 beats
-#     measure_duration = measure.duration.quarterLength
-#     partition_length = measure_duration / num_partitions
-#     partitions = []
-#     for i in range(num_partitions):
-#         start_offset = i * partition_length
-#         end_offset = (i + 1) * partition_length
-#         partitions.append((start_offset, end_offset))
-#     return partitions
-
-# def extract_elements_in_range(measure, start_offset, end_offset):
-#     elements_in_range = []
-#     for element in measure.flatten().notesAndRests.getElementsByOffset(start_offset, end_offset, includeEndBoundary=False):
-#         if isinstance(element, (note.Note, note.Rest)):  # Include both notes and rests
-#             elements_in_range.append(element)
-#     return elements_in_range
-
-
 import sys
 from fractions import Fraction
 from music21 import converter, note, tempo
@@ -37,6 +13,20 @@ def extract_elements_in_range(measure, start_offset, end_offset):
         if el.offset >= start_offset and el.offset < end_offset:
             elements.append(el)
     return elements
+
+def map_to_piano_range(value):
+    """
+    Maps a value from the range 10-97 to the range 21-108, or vice versa. 
+
+    Parameters:
+    value (int): The value to be mapped.
+
+    Returns:
+    int: The mapped value in the new range.
+    """
+    if value < 21 or value > 108:
+        raise ValueError("Value should be between 10 and 97")
+    return value - 10
 
 file_path = str(sys.argv[1])
 score = converter.parse(file_path)
@@ -54,14 +44,16 @@ for part in score.parts:
                 if isinstance(el, note.Note):
                     midi_number = el.pitch.midi
                     
-                    melody += str(midi_number)+":"+str(int(el.quarterLength*12))+":"
+                    melody += str(map_to_piano_range(midi_number))+":"+str(int(el.quarterLength*12))+":"
                 elif isinstance(el, note.Rest):
                     
-                    melody += "0:"+str(int(el.quarterLength*12))+":"
+                    melody += "10:"+str(int(el.quarterLength*12))+":"
 
     break
 
-print(melody)
+f = open("solo_representation.txt", "w")
+f.write(melody)
+f.close()
 
 """
 | Note Type                  | Value |

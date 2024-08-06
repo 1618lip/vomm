@@ -3,7 +3,9 @@ import graphviz
 from collections import defaultdict, Counter
 import os
 import sys
+#from createdistribution import createDistribution
 import time
+import itertools
 os.environ["PATH"] += os.pathsep + r"C:\Program Files\Graphviz\bin"
 
 alphabet = [':']
@@ -54,6 +56,29 @@ def get_contexts(training_data, D):
     for k in range(1, D + 1):
         contexts = contexts.union([training_data[t:t + k] for t in range(N - k  + 1)])
     return sorted(contexts)
+# def get_contexts(symbols, max_length):
+#     """
+#     Generate every possible string of maximum length max_length using the given symbols.
+
+#     Parameters:
+#     symbols (list): List of symbols to use in the strings.
+#     max_length (int): Maximum length of the strings.
+
+#     Returns:
+#     list: List of all possible strings up to the given maximum length.
+#     """
+#     all_strings = ['']
+    
+#     # Iterate over lengths from 1 to max_length
+#     for length in range(1, max_length + 1):
+#         # Generate all combinations of the given length
+#         for combination in itertools.product(symbols, repeat=length):
+#             string = ''.join(combination)
+#             # Ensure colons are not adjacent
+#             if '::' not in string:
+#                 all_strings.append(string)
+    
+#     return all_strings
 
 def unique_symbols(training_data):
     sym = set()
@@ -62,8 +87,8 @@ def unique_symbols(training_data):
     return sym
 
 def count_occurrences(training_data, D):
-    contexts = get_contexts(training_data, D)
-    counts = {context: {sigma: 0 for sigma in unique_symbols(training_data)} for context in contexts}
+    contexts = get_contexts(training_data, D)#get_contexts(training_data, D)
+    counts = {context: {sigma: 0 for sigma in alphabet} for context in contexts}
     N = len(training_data)
     for i in range(1, D + 1):
         for j in range(0, N - i):
@@ -147,28 +172,29 @@ def escape_prob(trie, context, sigma, training_data):
    
     
 def compute_ppm(counts, training_data, D):
+    trie = construct_trie(training_data, D)
     probs = counts # same format, but just change the value from counts to probability
     for s in get_contexts(training_data, D):
-        for sigma in unique_symbols(training_data):
+        for sigma in alphabet:
             probs[s][sigma] = escape_prob(trie, s, sigma, training_data)
     return probs
 
-sequence = sys.argv[2]
-D = int(sys.argv[1])  # Set context size
-counts = count_occurrences(sequence, D)
-trie = construct_trie(sequence, D)
+# sequence = sys.argv[2]
+# D = int(sys.argv[1])  # Set context size
+# counts = count_occurrences(sequence, D)
+# trie = construct_trie(sequence, D)
 
-dot = visualize_trie(trie)
+# dot = visualize_trie(trie)
 
-# Display the nodes with counters
-# print("Nodes with counters:")
-# for node in nodes_with_counters:
-#     print(node)
-# Render the trie visualization
-dot.render('trie', format='png', view=True)
+# # Display the nodes with counters
+# # print("Nodes with counters:")
+# # for node in nodes_with_counters:
+# #     print(node)
+# # Render the trie visualization
+# dot.render('trie', format='png', view=True)
 
-start = time.time()
-print_probabilities(compute_ppm(counts, sequence, D))
-end = time.time()
-print(f"Time elapsed = {end - start} seconds")
+# start = time.time()
+# print(compute_ppm(counts, sequence, D))
+# end = time.time()
+# print(f"Time elapsed = {end - start} seconds")
 

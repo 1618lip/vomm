@@ -1,16 +1,16 @@
 import xml.etree.ElementTree as ET
 from sklearn.metrics import log_loss
 import random 
-from xml.dom import minidom
-import zipfile
+
 import os
-import mido # type: ignore
 import sys
-from mido import MidiFile, MidiTrack, Message # type: ignore
+import math as m
 import time
+# from createdistribution import createDistribution
 
 start = time.time()
-q = sys.argv[1]
+f = open("solo_representation.txt", "r")
+q = f.read()
 Q = list(q.split(":"))
 Q.pop()
 """
@@ -30,6 +30,18 @@ cum_time || 0 b 2b 3b | 4b 5b 6b 7b ||   <-- cum_time
 
 if the cum_time mod 48 = 0 OR 24, then it is downbeat. 
 
+if context == "":
+    
+Map every note to the range 10 - 99 so that every 'note' is using two symbols. 
+
+1/5 * P(b|""a) = 0.14
+i(observing note: observing chord): log2(p(note|chord)|p(note)) = 
+Without context, it is said that P(a) = 1/|S|. But without context BUT know the chords, the probability of observing the note is 
+ P(a|"") = 1/|S|, what is a better one such that 
+Let T = note without know chord and S = note with know chord. Then, i(t:s) = log2(create_dist()/1/11)=log2(11*create_dist()).
+
+P(x|x1...x(i-1)) = P(x|x1...x(i-D))(1+ai(t:s))
+ i(note: )
 """
 for i in range(0, len(Q) // 2):
     if cum_time % 48 == 0: 
@@ -39,8 +51,11 @@ for i in range(0, len(Q) // 2):
     cum_time += int(Q[2*i+1])
 # def duration_to_position(Q):
 #     ru
+# def lmi(note, chord):
+#     info = m.log2(11*createDistribution(chord, note))
 print(Q)
-print(weights)
+
+
 end = time.time()
 print(f"Time elapsed = {end - start} seconds")
 
