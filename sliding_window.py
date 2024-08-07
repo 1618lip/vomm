@@ -1,7 +1,3 @@
-import numpy as np
-import graphviz
-from collections import defaultdict, Counter
-import os
 import sys
 import math as m
 from vomm_ppm import count_occurrences, compute_ppm
@@ -13,9 +9,8 @@ Perform sliding analysis. Window length is W >> D.
 
 Heuristic constraints: L >> kW, where k is in an even positive integer. And W > 4D
 """
-sequence = "76:48:80:48:76:3:76:3:78:3:78:3:80:3:80:3:81:3:81:3:83:3:83:3:85:3:85:3:87:3:87:3:0:6:88:3:88:3:87:3:"
-D = 10
-W = 48 # 1 bar
+D = int(sys.argv[1])
+W = 12*int(sys.argv[2]) # num beats
 alphabet = [':']
 for i in range(0, 10):
     alphabet.append(str(i))
@@ -93,9 +88,10 @@ def sliding_window(chords, Q, window):
                 note_in_window.append(note_info[i])
             elif  (12*k + window <= int(note_info[i][2]) and 12*k+2*window > note_info[i][2]) or (12*k +window - note_info[i][3] <= int(note_info[i][2]) and 12*k+2*window > note_info[i][2]):
                 test_sequence.append(note_info[i])
-        final.append((note_in_window, test_sequence))
-        if note_info[-1] in test_sequence:
+        if test_sequence == []:
             break
+        final.append((note_in_window, test_sequence))
+        
     return final
 
 def read_sliding_window(slides):
@@ -109,7 +105,7 @@ Q.pop()
 
 #print(chord_of_note(readFile("yardbird_suite_parsed.txt"), Q))
 
-def average_log_loss(training_and_test, a=1):
+def average_log_loss(training_and_test, a=0.4):
     toReturn = []
     count = 0
     for pair in training_and_test:
@@ -121,6 +117,8 @@ def average_log_loss(training_and_test, a=1):
             training_sequence = training_sequence + str(x[0]) + ":" + str(x[3]) + ":"
         for y in test:
             test_sequence = test_sequence + str(y[0]) + ":" + str(y[3]) + ":"
+        # print(training_sequence)
+        # print(test_sequence)
         counts = count_occurrences(training_sequence, D)
         counts_test = count_occurrences(test_sequence, D)
         counts_test.update(counts)
@@ -128,6 +126,7 @@ def average_log_loss(training_and_test, a=1):
             if context not in counts:
                 counts_test[context] = {sigma: 0 for sigma in alphabet}
         #print(counts_test)
+
         probs = compute_ppm(counts_test, training_sequence, D)
         
         # TODO: Think of how exactly to do the average log loss AND involve the LMI value. 
@@ -138,38 +137,50 @@ def average_log_loss(training_and_test, a=1):
         for n in test:  
             # probs[context][":"]*(1+a*n[4])
             context = context[max(0,len(context)-D):]
+            
             #context += n[0]+":"+n[3] 
-            prob_of_note = probs[context][str(n[0][0])]
+            prob_of_note = probs[context][str(n[0][0])] if probs[context][str(n[0][0])] != 0 else 1/len(alphabet)
+            #total += m.log2(prob_of_note)
             context+=str(n[0][0])
             context = context[max(0,len(context)-D):]
-            #print(context)
-            prob_of_note *= probs[context][str(n[0][1])] 
+            
+            prob_of_note *= probs[context][str(n[0][1])] if probs[context][str(n[0][1])] != 0 else 1/len(alphabet)
+            #total += m.log2(prob_of_note)
             context+=str(n[0][1])
             context = context[max(0,len(context)-D):]
-            prob_of_note *= probs[context][':']
-
+          
+            prob_of_note *= probs[context][':'] if probs[context][':'] != 0 else 1/len(alphabet)
+            #total += m.log2(prob_of_note)
+            
             context += ':'
             context = context[max(0,len(context)-D):]
+         
             if len(str(n[3])) > 1:
                 
-                prob_of_note *= probs[context][str(n[3])[0]] 
+                prob_of_note *= probs[context][str(n[3])[0]] if probs[context][str(n[3])[0]] != 0 else 1/len(alphabet)
+                #total += m.log2(prob_of_note)
                 context+=str(str(n[3])[0])
                 context = context[max(0,len(context)-D):]
-                prob_of_note *= probs[context][str(n[3])[1]]
+                prob_of_note *= probs[context][str(n[3])[1]] if probs[context][str(n[3])[1]] != 0 else 1/len(alphabet)
+                #total += m.log2(prob_of_note)
                 context+=str(str(n[3])[1])
-                context = context[max(0,len(context)-D):]
-                prob_of_note *= probs[context][':']
+                context = context[max(0,len(context)-D):]        
             else:
-                prob_of_note *= probs[context][str(n[3])] 
+                prob_of_note *= probs[context][str(n[3])] if probs[context][str(n[3])] != 0 else 1/len(alphabet)
+                #total += m.log2(prob_of_note)
                 context+=str(n[3])
                 context = context[max(0,len(context)-D):]
-                prob_of_note *= probs[context][':']
+        
+            prob_of_note *= probs[context][':'] if probs[context][':'] != 0 else 1/len(alphabet)
             prob_of_note = prob_of_note*(1+a*int(n[4]))
+            
             context += ":"
             context = context[max(0,len(context)-D):]
-            if prob_of_note != 0:
+            
                 
-                total += m.log2(prob_of_note)
+            total += m.log2(prob_of_note)
+            #count += 1
+            #print(count)
         # total = m.log2(probs[''][test[0]])
         # for i in range(1,D+1):
         #     total += m.log2(probs[test[0:i]][test[i]])
@@ -179,6 +190,8 @@ def average_log_loss(training_and_test, a=1):
         #     total += m.log2(probs[context][sigma])
         total = -total / len(test)
         toReturn.append(total)
+        
+        
     return toReturn
 #print(windows)
 #read_sliding_window(sliding_window(readFile("yardbird_suite_parsed.txt"), Q, W))
@@ -191,20 +204,23 @@ def plot_numbers_over_time(numbers):
     numbers (list or array): Array of numbers to be plotted.
     """
     # Generate a list of time points (e.g., 0, 1, 2, 3, ...)
-    time_points = list(range(len(numbers)))
-
+    time_points = []
+    x = 2
+    for i in range(0, len(numbers)):
+        time_points.append(x)
+        x += 0.25
     # Create the plot
     plt.figure(figsize=(10, 6))
     plt.plot(time_points, numbers, marker='o', linestyle='-')
 
     # Add labels and title
-    plt.xlabel('Time')
-    plt.ylabel('Value')
-    plt.title('Plot of Numbers Over Time')
+    plt.xlabel('Measure')
+    plt.ylabel('Average Log Loss')
+    plt.title('Melodic Complexity')
 
     # Add grid for better readability
     plt.grid(True)
 
     # Display the plot
     plt.show()
-plot_numbers_over_time(average_log_loss(sliding_window(readFile("yardbird_suite_parsed.txt"), Q, W)))
+plot_numbers_over_time(average_log_loss(sliding_window(readFile("Control3_parsed.txt"), Q, W)))

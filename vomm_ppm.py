@@ -163,10 +163,10 @@ def escape_prob(trie, context, sigma, training_data):
         new, new_total_count = context_children_and_counters(trie, context, sigma, False)
         return counters[-1][1] / (new + new_total_count) 
     if context == "":
-        return 1/len(unique_symbols(training_data))
+        return 1/len(alphabet)
     new, new_total_count = context_children_and_counters(trie, context, sigma, True)
     if ((new, new_total_count) == (0,0)):
-        return 1/len(unique_symbols(training_data))
+        return 1/len(alphabet)
     prob *= new / (new+new_total_count)
     return prob * escape_prob(trie, temp[0:len(temp)-1], sigma, training_data)
    
@@ -177,6 +177,8 @@ def compute_ppm(counts, training_data, D):
     for s in get_contexts(training_data, D):
         for sigma in alphabet:
             probs[s][sigma] = escape_prob(trie, s, sigma, training_data)
+            if int(probs[s][sigma]) == 0.0:
+                probs[s][sigma] = 1/len(alphabet)
     return probs
 
 # sequence = sys.argv[2]
@@ -198,3 +200,4 @@ def compute_ppm(counts, training_data, D):
 # end = time.time()
 # print(f"Time elapsed = {end - start} seconds")
 
+#)

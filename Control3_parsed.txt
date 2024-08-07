@@ -1,0 +1,4 @@
+A1
+[Cmaj7, Cmaj7, Cmaj7, Cmaj7], [Cmaj7, Cmaj7, Cmaj7, Cmaj7], [Emaj7, Emaj7, Emaj7, Emaj7], [Emaj7, Emaj7, Emaj7, Emaj7], [A-maj7, A-maj7, A-maj7, A-maj7], [A-maj7, A-maj7, A-maj7, A-maj7], [Bmaj7, Bmaj7, Bmaj7, Bmaj7], [Bmaj7, Bmaj7, Bmaj7, Bmaj7], 
+A2
+[Amaj7, Amaj7, Amaj7, Amaj7], [Amaj7, Amaj7, Amaj7, Amaj7], [D#dim, D#dim, D#dim, D#dim], [D#dim, D#dim, D#dim, D#dim], [G7, G7, G7, G7], [G7, G7, G7, G7], [Daug7#11, Daug7#11, Daug7#11, Daug7#11], [Daug7#11, Daug7#11, Daug7#11, Daug7#11], 
