@@ -49,10 +49,6 @@ for i in range(0, len(Q) // 2):
     elif cum_time % 48 == 24:
         weights[i] = 1.1
     cum_time += int(Q[2*i+1])
-# def duration_to_position(Q):
-#     ru
-# def lmi(note, chord):
-#     info = m.log2(11*createDistribution(chord, note))
 print(Q)
 
 

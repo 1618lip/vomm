@@ -1,23 +1,51 @@
 Introduction
 ===========
 
-This project implements in python 2 algorithms for variable order
-markov models called Predict by Partial Match (PPM) and Probabilistic
-Suffix Tree (PST). This code is based on the paper *"On Prediction Using Variable
+This repository is based on the paper *"Using Variable Order Markov Model in Measuring Temporal Dynamics of Melodic Complexity in Jazz Improvisation"* by Philip Pincencia (2024).
+
+
+Project sturcture:
+
+```
+| Paper_and_Conference_Slides
+  | Paper.pdf
+  | Conference_Slides.pdf
+| LaTeX files   % ONLY REPO OWNER CAN ACCESS
+  | # HIDDEN
+| 
+| chord_parser.cpp
+| 
+| Harmony_Score_Approach
+  | Hscore_general.py
+|
+| Chroma_Key_Approach
+  | chroma.py
+|
+| Variable_Order_Markov_Model_Approach
+  | midi_rep.py
+  | createdistribution.py
+  | vomm_ppm.py
+  | sliding_window.py
+|
+| run.sh
+```
+
+<h1>Details</h1>
+
+Here I detail the steps of each of the approaches
+
+Variable Order Markov Model (VOMM) Approach
+---
+I used the VOMM algorithm called Predict by Partial Match (PPM), which is implemented as a Multiway Trie. This is based on the paper *"On Prediction Using Variable
 Order Markov Models"* by Ron Begleiter, Ran El-Yaniv, and Golan Yona in
 the Journal of Artificial Intelligence Research 22 (2004) 385-421.
 
-Details
-=======
-The 2 algorithms (PPM, PST) are implemented in a python module called vomm.py
-(Variable Order Markov Models) with 2 variant classes for PPM and and 2 variant classes for PST.
+To learn the PPM model consists of several steps:
 
-Using either class to learn a model consists of several steps:
-
-1. Acquire training data. The data needs to be represented as an array of integers $(x_t)$ with the constraint  $0 <=  x_t < \text{alphabet size}$. An example:
+1. Convert to training sequence: `xml` file is parsed by `midi_rep.py` 
 ```{python}
-# Take a string and convert each character to its ordinal value.
-training_data = [ord(x) for x in "abracadabra" ]
+#
+
 ```
 2. Instantiate an object of the appropriate class. Example:
 ```{python}
@@ -31,46 +59,14 @@ my_model  = vomm.ppm()
 my_model.fit(training_data, d=2)
 ```
 
-Once you have learned a model from training you can do 2 things directly:
-
-1. Compute the log of the probability of an observed sequence based on
-model's parameters. The observed sequence has to be a sequence of integers $(x_t)$ just like the training data with the same constraints on $x_t$. For example:
-```{python}
-my_model.logpdf(observed_sequence)
-```
-2. Generate new data from the model of a specified length. For example
-```{python}
-my_model.generate_data(length=300)
-```
-
-To print out the numerical parameters of the learned model, just use the print statement/function like so:
-```{python}
-print(my_model)
-```
-
-Variants
-========
-
-There are 2 variants of the PPM algorithm:
-
-1. ppm -- this is an appropriate class to use when the size of the alphabet is relatively small, for example alphabet size < 256, i.e. an alphabet of bytes.
-
-2. PPM_words -- this is an appropriate class to use when the size of the alphabet is large, for example a vocabulary of words  ~ 2**15. This class implements a memory efficient implementation of the look up table for Pr(symbol|context).
-
-There are 2 variants of the PST algorithm:
-
-1. pst -- a class to use in situations similar to ppm.
-2. pst_JS -- this class is for the same regime as pst, but it implements a different pruning solution for contexts: it makes use of Jensen-Shannon Entropy to decide if the probability distribution of a longer context is sufficiently different than the probability distribution of its shorter context parent. One advantage of this class is that it autodetermine an appropriate threshold to use if the user doesn't know what to to use. 
-
 Internals
 =========
+Denote $q$ as the training sequence.\
 Learning a model consists of
 
-1. determining a set of contexts (a sequence of symbols of length no
-   larger than $d$) based on the length constraint $d$ (and other
-   possible constraints.)
-2. Estimating the probability distribution $Pr(\sigma|s)$ for each
-   context $s$ and symbol $\sigma$ in the alphabet.
+1. Construct the set $S$ consisting of contexts of length at most $D$ in the training sequence. Precisely, $S=\{s\in q ~|~|s|\leq D\}$.
+2. Building the Mutliway Trie $\mathcal{T}$ 
+2. Estimating the probability distribution $\hat P(\sigma|s)$ for each context $s$ and symbol $\sigma$ in the alphabet.
 
 After creating an object $x$ of whichever class you chose and *fitted*
 to the training data, the object $x$ will have several attributes of
@@ -84,28 +80,8 @@ which 3 are important:
   finding the largest context $s$ which matches the tail end of a
   sequence of symbols.
 
-Performance
+Future Implementation
 ===========
-
-* On a training set of ascii text (man bash | strings) of 338383 symbols  converted to their ordinal values with an alphabet size of 127 it takes
-  * approximately 56.5 seconds to learn a ppm model with d=4 generating 33764 contexts;
-  * approximately 20.3 seconds to learn a pst model with d=10 and default values for the other parameters generating 3834 contexts.
-* Using the same data and computing the log probability it takes
-  * approximately 3 seconds with ppm model;
-  * approximately 2 seconds with pst model.
-
-Installation
-===========
-
-This is a python module which is installed by using a distutils based
-install script setup.py.  Installation consists of either:
-
-```
-python setup.py install
-```
-
-or
-
-```
-pip install .
-```
+- Develop a web server to let users drop in an `xml` file and the associated chord changes pasted from WJazzDatabase
+- Animate the sliding window analysis to better understand the how the measure behaves
+- Convert `music21`-independent python files to `C++` to speed things up.

@@ -1,7 +1,0 @@
-digraph {
-	0 [label=root]
-	1 [label="s (2)"]
-	0 -> 1 [label=s]
-	2 [label="ss (1)"]
-	1 -> 2 [label=s]
-}

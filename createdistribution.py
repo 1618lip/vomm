@@ -81,8 +81,8 @@ def chordToNotes(chord_name):
 #     if "-" in pitch:
 #         pitch = pitch.replace("-", )
 def createDistribution(input_chord, midi):
-    if midi == 10:
-        return 1/11
+    # if midi == 10:
+    #     return 1/12
     if re.search("(([A-G](#|-)?min([1-9]*)?((#|-)[1-9]*)?))", input_chord):
         scale_types = scale_choice[1]
         # THIS IS TO PRIORITIZE MINOR CHORD
@@ -123,17 +123,17 @@ def createDistribution(input_chord, midi):
     chordy = [note_to_frequency(m) for m in chordy]
     for note in all_notes:
         if note == chordy[0]:
-            weights[all_notes.index(note)] = gauss(3.14, math.sqrt(0.001))
+            weights[all_notes.index(note)] = gauss(2.5, math.sqrt(0.005))
         elif note in chordy:
-            weights[all_notes.index(note)] = gauss(3, math.sqrt(0.001))
+            weights[all_notes.index(note)] = gauss(2.25, math.sqrt(0.005))
         elif len(candidates) > 0 and (note in candidates[0]):
-            weights[all_notes.index(note)] = gauss(2.5, math.sqrt(0.001))
+            weights[all_notes.index(note)] = gauss(1.75, math.sqrt(0.005))
         elif len(candidates) > 1 and (note in candidates[1]):
-            weights[all_notes.index(note)] = gauss(2, math.sqrt(0.001))
+            weights[all_notes.index(note)] = gauss(1.5, math.sqrt(0.005))
         elif len(candidates) > 2 and (note in candidates[2]):
-            weights[all_notes.index(note)] = gauss(1.75, math.sqrt(0.0025))
+            weights[all_notes.index(note)] = gauss(1.25, math.sqrt(0.005))
         else: 
-            weights[all_notes.index(note)] = gauss(1.5, math.sqrt(0.0025))
+            weights[all_notes.index(note)] = gauss(1, math.sqrt(0.005))
 
     denom = 0
     for w in weights: 
@@ -143,13 +143,10 @@ def createDistribution(input_chord, midi):
     for note in all_notes:
         softmax[all_notes.index(note)] = math.pow(math.e, weights[all_notes.index(note)]) / denom
 
-    
-
     # fig = plt.figure(figsize=(12,6))
     # ax = fig.add_axes(rect=(0.1,0.1,0.8,0.8))
     # ax.plot([i for i in range(1,len(all_notes)+1)], softmax, '-o')
 
-    #plt.ion()
     # ax.set_xlabel('Notes')
     # ax.set_ylabel('Probability')
     # ax.set_title('Probability distribution given ' + input_chord)
@@ -159,4 +156,4 @@ def createDistribution(input_chord, midi):
     # plt.show()
     return softmax[all_notes.index(midi_to_frequency(midi))]
 
-#print(createDistribution(sys.argv[1], int(sys.argv[2])))f
+#softmax = createDistribution(sys.argv[1], int(sys.argv[2]))

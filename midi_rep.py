@@ -1,6 +1,5 @@
 import sys
-from fractions import Fraction
-from music21 import converter, note, tempo
+from music21 import converter, note
 
 def partition_measure(measure):
     # Implement partition logic if needed
@@ -16,7 +15,7 @@ def extract_elements_in_range(measure, start_offset, end_offset):
 
 def map_to_piano_range(value):
     """
-    Maps a value from the range 10-97 to the range 21-108, or vice versa. 
+    Maps a value from the range 21-108 to the range 10-97.
 
     Parameters:
     value (int): The value to be mapped.
@@ -32,34 +31,33 @@ file_path = str(sys.argv[1])
 score = converter.parse(file_path)
 
 # Extract notes and partition measure
-for part in score.parts:
-    melody = ""
-    for measure in part.getElementsByClass('Measure'):
-        measure_number = measure.measureNumber
-        partitions = partition_measure(measure)
-        for i, (start_offset, end_offset) in enumerate(partitions):
-            section_elements = extract_elements_in_range(measure, start_offset, end_offset)
-            
-            for el in section_elements:
-                if isinstance(el, note.Note):
-                    midi_number = el.pitch.midi
-                    
-                    melody += str(map_to_piano_range(midi_number))+":"+str(int(el.quarterLength*12))+":"
-                elif isinstance(el, note.Rest):
-                    
-                    melody += "10:"+str(int(el.quarterLength*12))+":"
+part = (score.parts)[0]
+melody = ""
+for measure in part.getElementsByClass('Measure'):
+    measure_number = measure.measureNumber
+    partitions = partition_measure(measure)
+    for i, (start_offset, end_offset) in enumerate(partitions):
+        section_elements = extract_elements_in_range(measure, start_offset, end_offset)
+        
+        for el in section_elements:
+            if isinstance(el, note.Note):
+                midi_number = el.pitch.midi
+                melody += str(map_to_piano_range(midi_number))+":"+str(int(el.quarterLength*12))+":"
+            elif isinstance(el, note.Rest):
+                # Rest is denoted as 10. 
+                melody += "10:"+str(int(el.quarterLength*12))+":" 
 
-    break
 
-f = open("solo_representation.txt", "w")
+output_file = r""+sys.argv[1]
+f = open(output_file[:len(output_file)-4]+"_MIDI_representation.txt", "w")
 f.write(melody)
 f.close()
 
 """
 | Note Type                  | Value |
 |----------------------------|-------|
-| Whole note (semibreve)     | 48    |
-| Half note (minim)          | 24    |
+| Whole note (semibreve)     | 48    |           
+| Half note (minim)          | 24    |           
 | Quarter note (crotchet)    | 12    |
 | Eighth note (quaver)       | 6     |
 | Sixteenth note (semiquaver)| 3     |
@@ -67,5 +65,5 @@ f.close()
 | Eighth note triplet        | 4     |
 | Sixteenth note triplet     | 2     |
 
-Using these values, we can represent all note lengths without decimals.
+Using these values, we can represent all note lengths without decimals and maintain the duration ratios 
 """
