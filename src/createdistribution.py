@@ -155,5 +155,3 @@ def createDistribution(input_chord, midi):
     # plt.grid(True)
     # plt.show()
     return softmax[all_notes.index(midi_to_frequency(midi))]
-
-#softmax = createDistribution(sys.argv[1], int(sys.argv[2]))

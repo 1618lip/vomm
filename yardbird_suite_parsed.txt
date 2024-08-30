@@ -1,8 +1,0 @@
-A1
-[C6, C6, C6, C6], [Fmin7, Fmin7, B-7, B-7], [C7, C7, B-7, B-7], [A7, A7, A7, A7], [D7, D7, D7, D7], [G7, G7, G7, G7], [Emin7, Emin7, A7, A7], [Dmin7, Dmin7, G7, G7], 
-A2
-[C6, C6, C6, C6], [Fmin7, Fmin7, B-7, B-7], [C7, C7, B-7, B-7], [A7, A7, A7, A7], [D7, D7, D7, D7], [G7, G7, G7, G7], [C6, C6, C6, C6], [F#, F#, B79, B79], 
-B1
-[Emin7, Emin7, Emin7, Emin7], [F#, F#, B79, B79], [Emin7, Emin7, Emin7, Emin7], [A7, A7, A7, A7], [Dmin7, Dmin7, Dmin7, Dmin7], [E, E, A7, A7], [D7, D7, D7, D7], [Dmin7, Dmin7, G7, G7], 
-A3
-[C6, C6, C6, C6], [Fmin7, Fmin7, B-7, B-7], [C7, C7, B-7, B-7], [A7, A7, A7, A7], [D7, D7, D7, D7], [G7, G7, G7, G7], [C6, C6, C6, C6], [Dmin7, Dmin7, G7, G7], 

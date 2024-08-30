@@ -1,11 +1,11 @@
 import xml.etree.ElementTree as ET
 from sklearn.metrics import log_loss
 import random 
-
 import os
 import sys
 import math as m
 import time
+
 # from createdistribution import createDistribution
 
 start = time.time()
@@ -30,8 +30,6 @@ cum_time || 0 b 2b 3b | 4b 5b 6b 7b ||   <-- cum_time
 
 if the cum_time mod 48 = 0 OR 24, then it is downbeat. 
 
-if context == "":
-    
 Map every note to the range 10 - 99 so that every 'note' is using two symbols. 
 
 1/5 * P(b|""a) = 0.14

@@ -4,7 +4,7 @@ from vomm_ppm import count_occurrences, compute_ppm
 from createdistribution import createDistribution
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from matplotlib.widgets import Slider, Button
+import time
 """
 Perform sliding analysis. Window length is W >> D.
 
@@ -14,6 +14,7 @@ alphabet = [':']
 for i in range(0, 10):
     alphabet.append(str(i))
 # alphabet = {'0', '1', ..., '9', ':'}
+start = time.time()
 
 D = int(sys.argv[1])
 W = 12*int(sys.argv[2]) # num beats
@@ -236,6 +237,7 @@ def update(frame):
 
 # Animate
 ani = animation.FuncAnimation(fig, update, frames=len(complexity_values), init_func=init, interval=150, blit=True)
-
+end = time.time()
+# print(f"Time elapsed = {end - start} seconds")
 plt.show()
 plot_numbers_over_time(complexity_values)

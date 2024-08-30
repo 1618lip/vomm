@@ -1,8 +1,0 @@
-A1
-[Cmaj7, Cmaj7, Cmaj7, Cmaj7], [Cmaj7, Cmaj7, Cmaj7, Cmaj7], [Cmin7, Cmin7, Cmin7, Cmin7], [F7, F7, F7, F7], [F7, F7, F7, F7], [F7, F7, F7, F7], [B-min7, B-min7, B-min7, B-min7], [E-7, E-7, E-7, E-7], 
-B1
-[Amin7, Amin7, Amin7, Amin7], [D7, D7, D7, D7], [Bmin7, Bmin7, Bmin7, Bmin7], [Emin7, Emin7, Emin7, Emin7], [A7, A7, A7, A7], [A7, A7, A7, A7], [Amin7, Amin7, Amin7, Amin7], [D7, D7, D-7, D-7], 
-A2
-[Cmaj7, Cmaj7, Cmaj7, Cmaj7], [Cmaj7, Cmaj7, Cmaj7, Cmaj7], [Cmin7, Cmin7, Cmin7, Cmin7], [F7, F7, F7, F7], [Gmaj7, Gmaj7, Gmaj7, Gmaj7], [Gmaj7, Gmaj7, Gmaj7, Gmaj7], [B-min7, B-min7, B-min7, B-min7], [E-7, E-7, E-7, E-7], 
-B2
-[Amin7, Amin7, Amin7, Amin7], [D7, D7, D7, D7], [Bmin7, Bmin7, Bmin7, Bmin7], [Emin7, Emin7, Emin7, Emin7], [A7, A7, A7, A7], [Amin7, Amin7, D7, D7], [G6, G6, G6, G6], [Dmin7, Dmin7, G7, G7], 

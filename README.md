@@ -10,8 +10,6 @@ Project sturcture:
 | Paper_and_Conference_Slides
   | Paper.pdf
   | Conference_Slides.pdf
-| LaTeX files   % ONLY REPO OWNER CAN ACCESS
-  | # HIDDEN
 | 
 | chord_parser.cpp
 | 

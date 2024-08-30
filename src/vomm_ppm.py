@@ -98,9 +98,9 @@ def visualize_trie(trie):
             idx += 1
             child_id = str(idx)
             node_ids[child] = child_id
-            dot.node(child_id, f"{context + symbol} ({child.count})")
+            dot.node(child_id, f"{symbol} ({child.count})")
             dot.edge(parent_id, child_id, label=symbol)
-            nodes.append((child, context + symbol))
+            nodes.append((child, symbol))
     return dot
 def traverse_path(trie, path):
     node = trie.root
@@ -155,5 +155,24 @@ def compute_ppm(counts, training_data, D):
         for sigma in alphabet:
             probs[s][sigma] = escape_prob(trie, s, sigma, training_data)
             if int(probs[s][sigma]) == 0:
-                probs[s][sigma] = 1/len(alphabet)
+                probs[s][sigma] = 1/len(alphabet) #len(unique_symbols(training_data))
     return probs
+
+# sequence = sys.argv[2]
+# D = int(sys.argv[1])  # Set context size
+# counts = count_occurrences(sequence, D)
+# trie = construct_trie(sequence, D)
+
+# dot = visualize_trie(trie)
+
+# # Display the nodes with counters
+# # print("Nodes with counters:")
+# # for node in nodes_with_counters:
+# #     print(node)
+# # Render the trie visualization
+# dot.render('trie', format='png', view=True)
+
+# start = time.time()
+# print(compute_ppm(counts, sequence, D))
+# end = time.time()
+# print(f"Time elapsed = {end - start} seconds")
